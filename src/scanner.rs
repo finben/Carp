@@ -28,24 +28,38 @@ pub fn tokenize(source: &str) -> Vec<Token> {
                 if position < source.len() {
                     let next_char = source.chars().nth(position).unwrap();
                     if next_char == '=' {
-                        tokens.push(token_gen(EqualEqual, "=="));
+                        tokens.push(token_gen(GreaterEqual, "=="));
                         position += 1;
                         continue;
                     } else {
-                        tokens.push(token_gen(Equal, "="));
+                        tokens.push(token_gen(Greater, ">"));
                     }
                 }
                 continue;
             }
 
-            '<' => tokens.push(Token {
-                token_type: Less,
-                lexeme: '<'.to_string(),
-            }),
-            '=' => tokens.push(Token {
-                token_type: Equal,
-                lexeme: '='.to_string(),
-            }),
+            '<' => {
+                position += 1;
+                let next_char = source.chars().nth(position).unwrap();
+                if next_char == '=' {
+                    tokens.push(token_gen(LessEqual, "<="));
+                    position += 1;
+                } else {
+                    tokens.push(token_gen(Less, "<"));
+                }
+                continue;
+            }
+            '=' => {
+                position += 1;
+                let next_char = source.chars().nth(position).unwrap();
+                if next_char == '=' {
+                    tokens.push(token_gen(EqualEqual, "<="));
+                    position += 1;
+                } else {
+                    tokens.push(token_gen(Equal, "="));
+                }
+                continue;
+            }
 
             // NumericalLiterals
             x if x.is_digit(10) => {
